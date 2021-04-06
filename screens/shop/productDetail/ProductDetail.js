@@ -1,15 +1,47 @@
 import React from 'react';
-import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  Image,
+} from 'react-native';
 
 const ProductDetail = (props) => {
-  return <View style={{ ...props.style, ...styles.container }}></View>;
+  const productId = props.navigation.getParam('producId');
+
+  const product = useSelector((state) =>
+    state.products.availableProducts.find((product) => product.id === productId)
+  );
+
+  return (
+    <ScrollView style={{ ...props.style, ...styles.container }}>
+      <View>
+        <Image style={styles.image} source={{ uri: product.imageUrl }} />
+        <Text>Details of product {product.id}</Text>
+      </View>
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFF2E',
-    width: '80%',
+  },
+  image: {
+    height: 300,
+    width: '90%',
+    margin: 10,
   },
 });
+
+ProductDetail.navigationOptions = (navigationData) => {
+  return {
+    headerTitle: navigationData.navigation.getParam('productTitle'),
+  };
+};
 
 export default ProductDetail;

@@ -7,5 +7,7 @@ react-navigation
 react-navigation-header-buttons 
 react-native-gesture-handler 
 react-native-reanimated
+react-navigation-stack 
+react-navigation-drawer
 
 --------------------------------------------
