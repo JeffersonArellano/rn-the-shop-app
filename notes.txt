@@ -9,5 +9,8 @@ react-native-gesture-handler
 react-native-reanimated
 react-navigation-stack 
 react-navigation-drawer
+expo-apploading
+expo-font
+redux-devtools-extension
 
 --------------------------------------------

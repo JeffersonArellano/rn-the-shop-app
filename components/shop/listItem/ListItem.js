@@ -39,7 +39,7 @@ const ListItem = (props) => {
               <Button
                 title='To Cart'
                 color={Colors.primary}
-                onPress={props.onViewCart}
+                onPress={props.onAddToCart}
               />
             </View>
           </View>
@@ -84,11 +84,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    marginVertical: 4,
+    marginVertical: 2,
+    fontFamily: 'open-sans',
   },
   price: {
     fontSize: 14,
     color: '#888',
+    fontFamily: 'open-sans-bold',
   },
   buttonsGroup: {
     flexDirection: 'row',
