@@ -1,0 +1,16 @@
+Packages to  install 
+
+yarn add 
+react-redux  
+redux  
+react-navigation  
+react-navigation-header-buttons 
+react-native-gesture-handler 
+react-native-reanimated
+react-navigation-stack 
+react-navigation-drawer
+expo-apploading
+expo-font
+redux-devtools-extension
+
+--------------------------------------------
