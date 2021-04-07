@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux';
-import productsReducer from './store/reducers/products';
-import cartReducer from './store/reducers/cart';
+import rootReducer from './store/reducers';
 import Navigator from './navigation/Navigator';
 import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import { composeWithDevTools } from 'redux-devtools-extension';
-
-const rootReducer = combineReducers({
-  products: productsReducer,
-  cart: cartReducer,
-});
 
 const store = createStore(rootReducer, composeWithDevTools());
 

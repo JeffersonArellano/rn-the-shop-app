@@ -1,24 +1,16 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { removeFromCart } from '../../../store/actions/cart';
+import { addOrder } from '../../../store/actions/order';
 import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
 import Colors from '../../../constants/Colors';
 import CartItem from '../../../components/shop/cartItem/CartItem';
 
-const cartItem = (itemData) => {
-  return (
-    <CartItem
-      imageUrl={itemData.item.imageUrl}
-      title={itemData.item.productTitle}
-      amount={itemData.item.sum}
-      quantity={itemData.item.quantity}
-      onRemove={() => {}}
-    />
-  );
-};
-
 const Cart = (props) => {
   const totalAmount = useSelector((state) => state.cart.totalAmount);
   const products = useSelector((state) => state.products.availableProducts);
+
+  const dispatch = useDispatch();
 
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -36,7 +28,9 @@ const Cart = (props) => {
       });
     }
 
-    return transformedCartItems;
+    return transformedCartItems.sort((a, b) =>
+      a.productId > b.productId ? 1 : -1
+    );
   });
 
   if (cartItems.length <= 0) {
@@ -61,17 +55,33 @@ const Cart = (props) => {
           style={styles.buttonOrder}
           title='Order Now'
           disabled={cartItems.length === 0}
+          onPress={() => {
+            dispatch(addOrder(cartItems, totalAmount));
+            props.navigation.navigate('Orders');
+          }}
         />
       </View>
       <View style={{ ...props.style, ...styles.screen }}>
         <FlatList
           data={cartItems}
           keyExtractor={(item) => item.productId}
-          renderItem={cartItem}
+          renderItem={(itemData) => (
+            <CartItem
+              imageUrl={itemData.item.imageUrl}
+              title={itemData.item.productTitle}
+              amount={itemData.item.sum}
+              quantity={itemData.item.quantity}
+              onRemove={() => dispatch(removeFromCart(itemData.item.productId))}
+            />
+          )}
         ></FlatList>
       </View>
     </View>
   );
+};
+
+Cart.navigationOption = {
+  headerTitle: 'Your Cart',
 };
 
 const styles = StyleSheet.create({
