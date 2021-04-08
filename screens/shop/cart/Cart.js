@@ -57,7 +57,6 @@ const Cart = (props) => {
           disabled={cartItems.length === 0}
           onPress={() => {
             dispatch(addOrder(cartItems, totalAmount));
-            props.navigation.navigate('Orders');
           }}
         />
       </View>
@@ -72,6 +71,7 @@ const Cart = (props) => {
               amount={itemData.item.sum}
               quantity={itemData.item.quantity}
               onRemove={() => dispatch(removeFromCart(itemData.item.productId))}
+              deletable
             />
           )}
         ></FlatList>

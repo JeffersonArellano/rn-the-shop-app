@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FlatList, StyleSheet, Platform } from 'react-native';
+import { FlatList, StyleSheet, Platform, Alert } from 'react-native';
 import ListItem from '../../../components/shop/listItem/ListItem';
 import { addToCart } from '../../../store/actions/cart';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -22,9 +22,7 @@ const ProductOverview = (props) => {
             productTitle: itemData.item.title,
           })
         }
-        onAddToCart={() => {
-          dispatch(addToCart(itemData.item));
-        }}
+        onAddToCart={() => dispatch(addToCart(itemData.item))}
       />
     );
   };

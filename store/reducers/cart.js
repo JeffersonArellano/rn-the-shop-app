@@ -1,4 +1,8 @@
-import { ADD_TO_CART, REMOVE_FROM_CART } from '../actions/actionNameConstants';
+import {
+  ADD_TO_CART,
+  REMOVE_FROM_CART,
+  ADD_ORDER,
+} from '../actions/actionNameConstants';
 import CartItem from '../../models/cart-item';
 
 const initialState = {
@@ -11,6 +15,7 @@ export default (state = initialState, action) => {
     case ADD_TO_CART:
       let cartItem;
       const addedProduct = action.product;
+      console.log('addedProduct', addedProduct);
       const prodPrice = addedProduct.price;
       const prodTitle = addedProduct.title;
 
@@ -56,6 +61,9 @@ export default (state = initialState, action) => {
         items: updatedCartItems,
         totalAmount: state.totalAmount - selectedCartItem.productPrice,
       };
+
+    case ADD_ORDER:
+      return initialState;
 
     default:
       return state;

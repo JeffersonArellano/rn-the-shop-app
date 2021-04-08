@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { LogBox } from 'react-native';
 import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import rootReducer from './store/reducers';
@@ -6,7 +7,7 @@ import Navigator from './navigation/Navigator';
 import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import { composeWithDevTools } from 'redux-devtools-extension';
-
+LogBox.ignoreAllLogs();
 const store = createStore(rootReducer, composeWithDevTools());
 
 const fetchFonts = async () => {
