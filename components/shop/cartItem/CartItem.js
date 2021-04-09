@@ -15,19 +15,28 @@ const CartItem = (props) => {
       <View style={styles.imageContent}>
         <Image style={styles.image} source={{ uri: props.imageUrl }} />
       </View>
-      <View style={styles.itemData}>
-        <Text style={styles.quantity}> {props.quantity} </Text>
-        <Text style={styles.mainText}> {props.title} </Text>
-      </View>
-      <View style={styles.itemData}>
-        <Text style={styles.mainText}>${props.amount.toFixed(2)}</Text>
-        <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton}>
-          <Ionicons
-            name={Platform.os === 'android' ? 'md-trash' : 'ios-trash'}
-            size={23}
-            color='red'
-          />
-        </TouchableOpacity>
+      <View style={styles.description}>
+        <View style={styles.itemData}>
+          <Text style={styles.quantity}> {props.quantity} </Text>
+          <Text style={styles.mainText} numberOfLines={3}>
+            {props.title}
+          </Text>
+        </View>
+        <View style={styles.itemData}>
+          <Text style={styles.mainText}>${props.amount.toFixed(2)}</Text>
+          {props.deletable && (
+            <TouchableOpacity
+              onPress={props.onRemove}
+              style={styles.deleteButton}
+            >
+              <Ionicons
+                name={Platform.os === 'android' ? 'md-trash' : 'ios-trash'}
+                size={23}
+                color='red'
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -35,25 +44,36 @@ const CartItem = (props) => {
 
 const styles = StyleSheet.create({
   itemContainer: {
-    padding: 10,
+    padding: 5,
     backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 5,
     width: '100%',
+  },
+  description: {
+    width: '100%',
+    flexDirection: 'row',
+    marginHorizontal: 5,
   },
   itemData: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    width: '40%',
+    overflow: 'hidden',
   },
   quantity: { fontFamily: 'open-sans', color: '#888', fontSize: 16 },
-  mainText: { fontFamily: 'open-sans', fontSize: 16, color: 'black' },
-  deleteButton: { marginLeft: 20 },
+  mainText: {
+    fontFamily: 'open-sans',
+    fontSize: 16,
+    color: 'black',
+    marginHorizontal: 10,
+  },
+  deleteButton: { marginLeft: '20%' },
   imageContent: {
     height: 60,
     width: 60,
     borderRadius: 10,
+    width: '20%',
   },
   image: {
     width: '100%',

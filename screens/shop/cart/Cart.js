@@ -1,24 +1,17 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { removeFromCart } from '../../../store/actions/cart';
+import { addOrder } from '../../../store/actions/order';
 import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
 import Colors from '../../../constants/Colors';
 import CartItem from '../../../components/shop/cartItem/CartItem';
-
-const cartItem = (itemData) => {
-  return (
-    <CartItem
-      imageUrl={itemData.item.imageUrl}
-      title={itemData.item.productTitle}
-      amount={itemData.item.sum}
-      quantity={itemData.item.quantity}
-      onRemove={() => {}}
-    />
-  );
-};
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Cart = (props) => {
   const totalAmount = useSelector((state) => state.cart.totalAmount);
   const products = useSelector((state) => state.products.availableProducts);
+
+  const dispatch = useDispatch();
 
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -36,14 +29,22 @@ const Cart = (props) => {
       });
     }
 
-    return transformedCartItems;
+    return transformedCartItems.sort((a, b) =>
+      a.productId > b.productId ? 1 : -1
+    );
   });
 
   if (cartItems.length <= 0) {
     return (
       <View style={styles.emptyContainer}>
+        <MaterialCommunityIcons
+          name='cart-remove'
+          size={100}
+          color={Colors.primary}
+        />
         <Text style={styles.emptyList}>
-          There's not products added yet, start adding some Items
+          There's not products added, start adding some Items{' '}
+          <FontAwesome5 name='smile-wink' size={24} color='black' />
         </Text>
       </View>
     );
@@ -54,24 +55,42 @@ const Cart = (props) => {
       <View style={styles.summary}>
         <Text style={styles.summaryText}>
           Total:
-          <Text style={styles.totalAmount}>${totalAmount.toFixed(2)}</Text>
+          <Text style={styles.totalAmount}>
+            ${Math.round(totalAmount.toFixed(2) * 100) / 100}
+          </Text>
         </Text>
         <Button
           color={Colors.accent}
           style={styles.buttonOrder}
           title='Order Now'
           disabled={cartItems.length === 0}
+          onPress={() => {
+            dispatch(addOrder(cartItems, totalAmount));
+          }}
         />
       </View>
       <View style={{ ...props.style, ...styles.screen }}>
         <FlatList
           data={cartItems}
           keyExtractor={(item) => item.productId}
-          renderItem={cartItem}
+          renderItem={(itemData) => (
+            <CartItem
+              imageUrl={itemData.item.imageUrl}
+              title={itemData.item.productTitle}
+              amount={itemData.item.sum}
+              quantity={itemData.item.quantity}
+              onRemove={() => dispatch(removeFromCart(itemData.item.productId))}
+              deletable
+            />
+          )}
         ></FlatList>
       </View>
     </View>
   );
+};
+
+Cart.navigationOption = {
+  headerTitle: 'Your Cart',
 };
 
 const styles = StyleSheet.create({
