@@ -3,9 +3,16 @@ import { Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
-import { ProductOverview, ProductDetail, Cart, Orders } from '../screens/index';
+import {
+  ProductOverview,
+  ProductDetail,
+  Cart,
+  Orders,
+  UserProducts,
+  EditProduct,
+} from '../screens/index';
 import Colors from '../constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Entypo } from '@expo/vector-icons';
 
 const defaultOption = {
   headerStyle: {
@@ -56,8 +63,27 @@ const OrdersNavigator = createStackNavigator(
   }
 );
 
+const UserProductsNavigator = createStackNavigator(
+  {
+    UserProducts,
+    EditProduct,
+  },
+  {
+    navigationOptions: {
+      drawerIcon: (drawerConfig) => (
+        <Entypo name='add-to-list' size={23} color={drawerConfig.tintColor} />
+      ),
+    },
+    defaultNavigationOptions: defaultOption,
+  }
+);
+
 const ShopNavigator = createDrawerNavigator(
-  { Products: ProductsNavigation, Orders: OrdersNavigator },
+  {
+    Products: ProductsNavigation,
+    Orders: OrdersNavigator,
+    Admin: UserProductsNavigator,
+  },
   {
     contentOptions: {
       activeTintColor: Colors.primary,

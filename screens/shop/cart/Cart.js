@@ -5,6 +5,7 @@ import { addOrder } from '../../../store/actions/order';
 import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
 import Colors from '../../../constants/Colors';
 import CartItem from '../../../components/shop/cartItem/CartItem';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Cart = (props) => {
   const totalAmount = useSelector((state) => state.cart.totalAmount);
@@ -36,8 +37,14 @@ const Cart = (props) => {
   if (cartItems.length <= 0) {
     return (
       <View style={styles.emptyContainer}>
+        <MaterialCommunityIcons
+          name='cart-remove'
+          size={100}
+          color={Colors.primary}
+        />
         <Text style={styles.emptyList}>
-          There's not products added yet, start adding some Items
+          There's not products added, start adding some Items{' '}
+          <FontAwesome5 name='smile-wink' size={24} color='black' />
         </Text>
       </View>
     );
@@ -48,7 +55,9 @@ const Cart = (props) => {
       <View style={styles.summary}>
         <Text style={styles.summaryText}>
           Total:
-          <Text style={styles.totalAmount}>${totalAmount.toFixed(2)}</Text>
+          <Text style={styles.totalAmount}>
+            ${Math.round(totalAmount.toFixed(2) * 100) / 100}
+          </Text>
         </Text>
         <Button
           color={Colors.accent}

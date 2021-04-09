@@ -21,7 +21,7 @@ const ListItem = (props) => {
   return (
     <View style={{ ...props.style, ...styles.container }}>
       <View style={styles.touchable}>
-        <TouchableComponent onPress={props.onViewDetails} useForeground>
+        <TouchableComponent onPress={props.onSelect} useForeground>
           <View>
             <View style={styles.imageContainer}>
               <Image style={styles.image} source={{ uri: props.imageUrl }} />
@@ -30,18 +30,7 @@ const ListItem = (props) => {
               <Text style={styles.title}>{props.title}</Text>
               <Text style={styles.price}>${props.price.toFixed(2)}</Text>
             </View>
-            <View style={styles.buttonsGroup}>
-              <Button
-                title='Details'
-                color={Colors.primary}
-                onPress={props.onViewDetails}
-              />
-              <Button
-                title='To Cart'
-                color={Colors.primary}
-                onPress={props.onAddToCart}
-              />
-            </View>
+            <View style={styles.buttonsGroup}>{props.children}</View>
           </View>
         </TouchableComponent>
       </View>
