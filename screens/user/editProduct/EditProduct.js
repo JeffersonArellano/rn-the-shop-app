@@ -1,13 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  View,
-  Text,
-  Button,
-  TextInput,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
 import { createProduct, updateProduct } from '../../../store/actions/products';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../../components/UI/headerButton/HeaderButton';
@@ -39,6 +32,8 @@ const EditProduct = (props) => {
     } else {
       dispatch(createProduct(product));
     }
+
+    props.navigation.goBack();
   }, [dispatch, product]);
 
   useEffect(() => {
