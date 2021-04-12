@@ -1,6 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import { createProduct, updateProduct } from '../../../store/actions/products';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../../components/UI/headerButton/HeaderButton';
@@ -14,27 +21,72 @@ const EditProduct = (props) => {
     state.products.availableProducts.find((prop) => prop.id === prodId)
   );
 
-  const [product, setProduct] = useState({
-    id: productToEdit ? productToEdit.id : '',
-    title: productToEdit ? productToEdit.title : '',
-    imageUrl: productToEdit ? productToEdit.imageUrl : '',
-    price: '',
-    description: productToEdit ? productToEdit.description : '',
+  const [productState, setProductState] = useState({
+    data: {
+      id: productToEdit ? productToEdit.id : '',
+      title: productToEdit ? productToEdit.title : '',
+      imageUrl: productToEdit ? productToEdit.imageUrl : '',
+      price: '',
+      description: productToEdit ? productToEdit.description : '',
+    },
+    errors: {},
   });
 
+  const errors = {};
+
+  const validateData = useCallback(
+    (product) => {
+      if (!product.data.title) {
+        errors.title = {
+          message: 'Please enter a valid Title',
+        };
+      }
+      if (!product.data.imageUrl) {
+        errors.imageUrl = {
+          message: 'Please enter a valid ImageUrl',
+        };
+      }
+      if (!product.data.price) {
+        errors.price = {
+          message: 'Please enter a valid Price',
+        };
+      }
+      if (!product.data.description) {
+        errors.description = {
+          message: 'Please enter a Description',
+        };
+      }
+      return errors;
+    },
+    [productState]
+  );
+
   const updateProductHandler = (newItem) => {
-    setProduct({ ...product, ...newItem });
+    setProductState({
+      ...productState,
+      data: { ...productState.data, ...newItem },
+    });
   };
 
   const submitHandler = useCallback(() => {
-    if (productToEdit) {
-      dispatch(updateProduct(product));
-    } else {
-      dispatch(createProduct(product));
+    const errors = validateData(productState);
+    setProductState({ ...productState, errors });
+
+    if (!Object.keys(errors).length > 0) {
+      if (productToEdit) {
+        dispatch(updateProduct(productState));
+      } else {
+        dispatch(createProduct(productState));
+      }
+      props.navigation.goBack();
     }
 
-    props.navigation.goBack();
-  }, [dispatch, product]);
+    Alert.alert('Missing data!', 'Please check the errors in the form', [
+      {
+        text: 'Ok',
+      },
+    ]);
+  }, [dispatch, validateData, productState]);
 
   useEffect(() => {
     props.navigation.setParams({ submit: submitHandler });
@@ -47,29 +99,45 @@ const EditProduct = (props) => {
           <Text style={styles.label}>Title</Text>
           <TextInput
             style={styles.input}
-            value={product.title}
+            value={productState.data.title}
             onChangeText={(text) => updateProductHandler({ title: text })}
+            autoCapitalize='sentences'
           ></TextInput>
+          {productState.errors.title?.message && (
+            <Text style={{ color: Colors.primary }}>
+              {productState.errors.title.message}
+            </Text>
+          )}
         </View>
         <View style={styles.formControl}>
           <Text style={styles.label}>Image Url</Text>
           <TextInput
             style={styles.input}
-            value={product.imageUrl}
+            value={productState.data.imageUrl}
             onChangeText={(text) => updateProductHandler({ imageUrl: text })}
           ></TextInput>
+          {productState.errors.imageUrl?.message && (
+            <Text style={{ color: Colors.primary }}>
+              {productState.errors.imageUrl.message}
+            </Text>
+          )}
         </View>
         {productToEdit ? null : (
           <View style={styles.formControl}>
             <Text style={styles.label}>Price</Text>
             <TextInput
-              keyboardType='numeric'
+              keyboardType='decimal-pad'
               style={styles.input}
-              value={product.price}
+              value={productState.data.price}
               onChangeText={(text) =>
                 updateProductHandler({ price: parseFloat(text) })
               }
             ></TextInput>
+            {productState.errors.price?.message && (
+              <Text style={{ color: Colors.primary }}>
+                {productState.errors.price.message}
+              </Text>
+            )}
           </View>
         )}
         <View style={styles.formControl}>
@@ -78,9 +146,14 @@ const EditProduct = (props) => {
             multiline={true}
             numberOfLines={4}
             style={styles.input}
-            value={product.description}
+            value={productState.data.description}
             onChangeText={(text) => updateProductHandler({ description: text })}
           ></TextInput>
+          {productState.errors.description?.message && (
+            <Text style={{ color: Colors.primary }}>
+              {productState.errors.description.message}
+            </Text>
+          )}
         </View>
       </View>
     </ScrollView>
@@ -129,7 +202,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingVertical: 5,
     paddingHorizontal: 3,
-    borderColor: Colors.primary,
+    borderColor: '#888',
   },
 });
 
