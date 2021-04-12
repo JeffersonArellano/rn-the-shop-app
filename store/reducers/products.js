@@ -19,7 +19,7 @@ export default (state = initialState, action) => {
       const product = action.product;
 
       const newProduct = new Product(
-        uuidv4(),
+        product.id,
         'u1',
         product.title,
         product.imageUrl,
