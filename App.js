@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { LogBox } from 'react-native';
-import { combineReducers, createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import rootReducer from './store/reducers';
-import Navigator from './navigation/Navigator';
-import AppLoading from 'expo-app-loading';
-import * as Font from 'expo-font';
-import ReduxThunk from 'redux-thunk';
+import React, { useState } from "react";
+import { LogBox } from "react-native";
+import { compose, createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import rootReducer from "./store/reducers";
+import Navigator from "./navigation/Navigator";
+import AppLoading from "expo-app-loading";
+import * as Font from "expo-font";
+import ReduxThunk from "redux-thunk";
 
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { composeWithDevTools } from "redux-devtools-extension";
 LogBox.ignoreAllLogs();
+
 const store = createStore(
   rootReducer,
-  composeWithDevTools(),
-  applyMiddleware(ReduxThunk)
+  composeWithDevTools(applyMiddleware(ReduxThunk))
 );
 
 const fetchFonts = async () => {
   await Font.loadAsync({
-    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
-    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
   });
 };
 

@@ -1,26 +1,35 @@
-import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
-import data from '../../data/dummy-data';
-import Product from '../../models/product';
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
+import data from "../../data/dummy-data";
+import Product from "../../models/product";
 import {
+  GET_PRODUCTS,
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
   DELETE_PRODUCT,
-} from '../actions/actionNameConstants';
+} from "../actions/actionNameConstants";
 
 const initialState = {
   availableProducts: data.PRODUCTS,
-  userProducts: data.PRODUCTS.filter((product) => product.ownerId === 'u1'),
+  userProducts: data.PRODUCTS.filter((product) => product.ownerId === "u1"),
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case GET_PRODUCTS:
+      return {
+        availableProducts: action.products,
+        userProducts: action.products.filter(
+          (product) => product.ownerId === "u1"
+        ),
+      };
+
     case CREATE_PRODUCT:
       const product = action.product;
 
       const newProduct = new Product(
         product.id,
-        'u1',
+        "u1",
         product.title,
         product.imageUrl,
         product.description,
