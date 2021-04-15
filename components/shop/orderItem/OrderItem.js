@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
 import CartItem from '../cartItem/CartItem';
 import Colors from '../../../constants/Colors';
+import Card from '../../UI/card/Card';
 const OrderItem = (props) => {
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <View style={{ ...props.style, ...styles.orderItem }}>
+    <Card style={{ ...props.style, ...styles.orderItem }}>
       <View style={styles.dateSummary}>
         <Text style={styles.dateLabel}>Date : </Text>
         <Text style={styles.date}>{props.date}</Text>
@@ -34,19 +35,12 @@ const OrderItem = (props) => {
           ))}
         </View>
       )}
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
   orderItem: {
-    shadowColor: 'black',
-    shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    borderRadius: 10,
-    backgroundColor: 'white',
     padding: 10,
     margin: 20,
     alignItems: 'center',
