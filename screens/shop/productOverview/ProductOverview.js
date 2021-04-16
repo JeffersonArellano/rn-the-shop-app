@@ -19,6 +19,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const ProductOverview = (props) => {
   const [isLoading, setIsloading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
 
   const products = useSelector((state) => state.products.availableProducts);
@@ -26,17 +27,31 @@ const ProductOverview = (props) => {
 
   const loadProducts = useCallback(async () => {
     setErrorMessage(null);
+    setIsRefreshing(true);
     try {
       await dispatch(getProducts());
     } catch (error) {
       setErrorMessage(error.message);
     }
+    setIsRefreshing(false);
   }, [dispatch, setIsloading, setErrorMessage]);
 
   useEffect(() => {
+    const willFocusSub = props.navigation.addListener(
+      "willFocus",
+      loadProducts
+    );
+
+    return () => {
+      willFocusSub.remove();
+    };
+  }, [loadProducts]);
+
+  useEffect(() => {
     setIsloading(true);
-    loadProducts();
-    setIsloading(false);
+    loadProducts().then(() => {
+      setIsloading(false);
+    });
   }, [dispatch, loadProducts]);
 
   const selectedItemHandler = (id, title) => {
@@ -75,13 +90,15 @@ const ProductOverview = (props) => {
   if (errorMessage) {
     return (
       <View style={styles.centered}>
-        <Ionicons name="sad" size={80} color={Colors.primary} />
+        <Ionicons name="sad-outline" size={80} color={Colors.primary} />
         <Text style={styles.emptyProducts}>{errorMessage}</Text>
-        <Button
-          title="try Again"
-          onPress={loadProducts}
-          Colors={Colors.primary}
-        />
+        <View style={styles.buttonError}>
+          <Button
+            color={Colors.primary}
+            title="try Again"
+            onPress={loadProducts}
+          />
+        </View>
       </View>
     );
   }
@@ -107,6 +124,8 @@ const ProductOverview = (props) => {
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={products}
       keyExtractor={(item) => item.id}
       renderItem={itemList}
@@ -121,6 +140,10 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans",
     fontSize: 18,
     textAlign: "center",
+  },
+  buttonError: {
+    marginVertical: 20,
+    fontFamily: "open-sans",
   },
 });
 

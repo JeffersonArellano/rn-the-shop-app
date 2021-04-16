@@ -1,16 +1,28 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { removeFromCart } from '../../../store/actions/cart';
-import { addOrder } from '../../../store/actions/order';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
-import Colors from '../../../constants/Colors';
-import CartItem from '../../../components/shop/cartItem/CartItem';
-import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import Card from '../../../components/UI/card/Card';
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCart } from "../../../store/actions/cart";
+import { addOrder } from "../../../store/actions/order";
+import {
+  View,
+  Text,
+  Button,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import Colors from "../../../constants/Colors";
+import CartItem from "../../../components/shop/cartItem/CartItem";
+import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import Card from "../../../components/UI/card/Card";
+import { useCallback } from "react";
 
 const Cart = (props) => {
   const totalAmount = useSelector((state) => state.cart.totalAmount);
   const products = useSelector((state) => state.products.availableProducts);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
 
   const dispatch = useDispatch();
 
@@ -35,17 +47,34 @@ const Cart = (props) => {
     );
   });
 
+  useEffect(() => {
+    if (error) {
+      Alert.alert("Alert", error, [{ text: "Ok" }]);
+    }
+  }, [error]);
+
+  const sendOrderHandler = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      await dispatch(addOrder(cartItems, totalAmount));
+    } catch (error) {
+      setError(error.message);
+    }
+    setIsLoading(false);
+  }, [dispatch]);
+
   if (cartItems.length <= 0) {
     return (
       <View style={styles.emptyContainer}>
         <MaterialCommunityIcons
-          name='cart-remove'
+          name="cart-remove"
           size={100}
           color={Colors.primary}
         />
         <Text style={styles.emptyList}>
-          There's not products added, start adding some Items{' '}
-          <FontAwesome5 name='smile-wink' size={24} color='black' />
+          There's not products added, start adding some Items{" "}
+          <FontAwesome5 name="smile-wink" size={24} color="black" />
         </Text>
       </View>
     );
@@ -60,15 +89,17 @@ const Cart = (props) => {
             ${Math.round(totalAmount.toFixed(2) * 100) / 100}
           </Text>
         </Text>
-        <Button
-          color={Colors.accent}
-          style={styles.buttonOrder}
-          title='Order Now'
-          disabled={cartItems.length === 0}
-          onPress={() => {
-            dispatch(addOrder(cartItems, totalAmount));
-          }}
-        />
+        {isLoading ? (
+          <ActivityIndicator size="large" color={Colors.primary} />
+        ) : (
+          <Button
+            color={Colors.accent}
+            style={styles.buttonOrder}
+            title="Order Now"
+            disabled={cartItems.length === 0}
+            onPress={sendOrderHandler}
+          />
+        )}
       </Card>
       <View style={{ ...props.style, ...styles.screen }}>
         <FlatList
@@ -91,7 +122,7 @@ const Cart = (props) => {
 };
 
 Cart.navigationOption = {
-  headerTitle: 'Your Cart',
+  headerTitle: "Your Cart",
 };
 
 const styles = StyleSheet.create({
@@ -99,28 +130,29 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   summary: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
     padding: 10,
   },
   summaryText: {
-    fontFamily: 'open-sans',
+    fontFamily: "open-sans",
     fontSize: 18,
-    color: 'black',
-    textAlign: 'center',
+    color: "black",
+    textAlign: "center",
   },
   totalAmount: {
     color: Colors.primary,
   },
   buttonOrder: {},
-  emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  emptyContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
   emptyList: {
-    textAlign: 'center',
-    fontFamily: 'open-sans',
+    textAlign: "center",
+    fontFamily: "open-sans",
     fontSize: 20,
   },
+  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
 
 export default Cart;

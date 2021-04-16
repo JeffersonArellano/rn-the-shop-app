@@ -1,7 +1,5 @@
-import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
-import { ADD_ORDER } from '../actions/actionNameConstants';
-import Order from '../../models/order';
+import { ADD_ORDER, GET_ORDERS } from "../actions/actionNameConstants";
+import Order from "../../models/order";
 
 const initialState = {
   orders: [],
@@ -9,12 +7,15 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case GET_ORDERS:
+      return { orders: action.orders };
+
     case ADD_ORDER:
       const newOrder = new Order(
-        uuidv4(),
+        action.orderData.orderId,
         action.orderData.items,
         action.orderData.amount,
-        new Date()
+        action.orderData.orderDate
       );
 
       return { ...state, orders: state.orders.concat(newOrder) };
