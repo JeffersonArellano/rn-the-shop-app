@@ -56,8 +56,6 @@ export const createProduct = (product) => {
     const responseData = await response.json();
     product.id = responseData.name;
 
-    console.log("product", product);
-
     dispatch({ type: CREATE_PRODUCT, product });
   };
 };

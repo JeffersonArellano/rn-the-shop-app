@@ -75,13 +75,15 @@ const ProductOverview = (props) => {
   if (errorMessage) {
     return (
       <View style={styles.centered}>
-        <Ionicons name="sad" size={80} color={Colors.primary} />
+        <Ionicons name="sad-outline" size={80} color={Colors.primary} />
         <Text style={styles.emptyProducts}>{errorMessage}</Text>
-        <Button
-          title="try Again"
-          onPress={loadProducts}
-          Colors={Colors.primary}
-        />
+        <View style={styles.buttonError}>
+          <Button
+            color={Colors.primary}
+            title="try Again"
+            onPress={loadProducts}
+          />
+        </View>
       </View>
     );
   }
@@ -121,6 +123,10 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans",
     fontSize: 18,
     textAlign: "center",
+  },
+  buttonError: {
+    marginVertical: 20,
+    fontFamily: "open-sans",
   },
 });
 
