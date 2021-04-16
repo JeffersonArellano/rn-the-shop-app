@@ -7,11 +7,13 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { createProduct, updateProduct } from "../../../store/actions/products";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../../components/UI/headerButton/HeaderButton";
 import CustomInput from "../../../components/UI/input/Input";
+import Colors from "../../../constants/Colors";
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
@@ -44,6 +46,10 @@ const formReducer = (state, action) => {
 
 const EditProduct = (props) => {
   const prodId = props.navigation.getParam("productId");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+
   const dispatch = useDispatch();
   const productToEdit = useSelector((state) =>
     state.products.availableProducts.find((prop) => prop.id === prodId)
@@ -78,7 +84,13 @@ const EditProduct = (props) => {
     [dispatchFormState]
   );
 
-  const submitHandler = useCallback(() => {
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An error  occurred!", error, [{ text: "Ok" }]);
+    }
+  }, [error]);
+
+  const submitHandler = useCallback(async () => {
     if (!formState.formIsValid) {
       Alert.alert("Missing data!", "Please check the errors in the form", [
         {
@@ -89,17 +101,34 @@ const EditProduct = (props) => {
     }
 
     formState.inputValues.price = +formState.inputValues.price;
-    if (productToEdit) {
-      dispatch(updateProduct(formState.inputValues));
-    } else {
-      dispatch(createProduct(formState.inputValues));
+
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      if (productToEdit) {
+        await dispatch(updateProduct(formState.inputValues));
+      } else {
+        await dispatch(createProduct(formState.inputValues));
+      }
+      props.navigation.goBack();
+    } catch (error) {
+      setError(error.message);
     }
-    props.navigation.goBack();
+    setIsLoading(false);
   }, [dispatch, formState]);
 
   useEffect(() => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -189,6 +218,11 @@ EditProduct.navigationOptions = (navData) => {
 const styles = StyleSheet.create({
   form: {
     margin: 20,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

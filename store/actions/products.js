@@ -62,7 +62,7 @@ export const createProduct = (product) => {
 
 export const updateProduct = (product) => {
   return async (dispatch) => {
-    await fetch(
+    const response = await fetch(
       `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products/${product.id}.json`,
       {
         method: "PATCH",
@@ -75,18 +75,26 @@ export const updateProduct = (product) => {
       }
     );
 
+    if (!response.ok) {
+      throw new Error("Something went wrong!");
+    }
+
     dispatch({ type: UPDATE_PRODUCT, product });
   };
 };
 
 export const deleteProduct = (productId) => {
   return async (dispatch) => {
-    await fetch(
+    const response = await fetch(
       `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products/${productId}.json`,
       {
         method: "DELETE",
       }
     );
+
+    if (!response.ok) {
+      throw new Error("Something went wrong!");
+    }
 
     dispatch({ type: DELETE_PRODUCT, productId });
   };
