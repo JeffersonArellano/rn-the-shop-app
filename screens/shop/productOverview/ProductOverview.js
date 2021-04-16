@@ -19,6 +19,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const ProductOverview = (props) => {
   const [isLoading, setIsloading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
 
   const products = useSelector((state) => state.products.availableProducts);
@@ -26,11 +27,13 @@ const ProductOverview = (props) => {
 
   const loadProducts = useCallback(async () => {
     setErrorMessage(null);
+    setIsRefreshing(true);
     try {
       await dispatch(getProducts());
     } catch (error) {
       setErrorMessage(error.message);
     }
+    setIsRefreshing(false);
   }, [dispatch, setIsloading, setErrorMessage]);
 
   useEffect(() => {
@@ -46,8 +49,9 @@ const ProductOverview = (props) => {
 
   useEffect(() => {
     setIsloading(true);
-    loadProducts();
-    setIsloading(false);
+    loadProducts().then(() => {
+      setIsloading(false);
+    });
   }, [dispatch, loadProducts]);
 
   const selectedItemHandler = (id, title) => {
@@ -120,6 +124,8 @@ const ProductOverview = (props) => {
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={products}
       keyExtractor={(item) => item.id}
       renderItem={itemList}
