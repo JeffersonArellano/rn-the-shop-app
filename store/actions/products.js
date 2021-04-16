@@ -27,7 +27,7 @@ export const getProducts = () => {
             key,
             "u1",
             responseData[key].title,
-            responseData[key].immageUrl,
+            responseData[key].imageUrl,
             responseData[key].description,
             responseData[key].price
           )
@@ -61,9 +61,33 @@ export const createProduct = (product) => {
 };
 
 export const updateProduct = (product) => {
-  return { type: UPDATE_PRODUCT, product };
+  return async (dispatch) => {
+    await fetch(
+      `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products/${product.id}.json`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: product.title,
+          description: product.description,
+          imageUrl: product.imageUrl,
+        }),
+      }
+    );
+
+    dispatch({ type: UPDATE_PRODUCT, product });
+  };
 };
 
 export const deleteProduct = (productId) => {
-  return { type: DELETE_PRODUCT, productId };
+  return async (dispatch) => {
+    await fetch(
+      `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products/${productId}.json`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    dispatch({ type: DELETE_PRODUCT, productId });
+  };
 };

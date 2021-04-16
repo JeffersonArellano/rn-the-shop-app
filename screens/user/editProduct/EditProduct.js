@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useReducer } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect, useCallback, useReducer } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   View,
   StyleSheet,
@@ -7,13 +7,13 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import { createProduct, updateProduct } from '../../../store/actions/products';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import CustomHeaderButton from '../../../components/UI/headerButton/HeaderButton';
-import CustomInput from '../../../components/UI/input/Input';
+} from "react-native";
+import { createProduct, updateProduct } from "../../../store/actions/products";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import CustomHeaderButton from "../../../components/UI/headerButton/HeaderButton";
+import CustomInput from "../../../components/UI/input/Input";
 
-const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
+const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
 const formReducer = (state, action) => {
   if (action.type === FORM_INPUT_UPDATE) {
@@ -43,7 +43,7 @@ const formReducer = (state, action) => {
 };
 
 const EditProduct = (props) => {
-  const prodId = props.navigation.getParam('productId');
+  const prodId = props.navigation.getParam("productId");
   const dispatch = useDispatch();
   const productToEdit = useSelector((state) =>
     state.products.availableProducts.find((prop) => prop.id === prodId)
@@ -51,11 +51,11 @@ const EditProduct = (props) => {
 
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
-      id: productToEdit ? productToEdit.id : '',
-      title: productToEdit ? productToEdit.title : '',
-      imageUrl: productToEdit ? productToEdit.imageUrl : '',
-      price: '',
-      description: productToEdit ? productToEdit.description : '',
+      id: productToEdit ? productToEdit.id : "",
+      title: productToEdit ? productToEdit.title : "",
+      imageUrl: productToEdit ? productToEdit.imageUrl : "",
+      price: "",
+      description: productToEdit ? productToEdit.description : "",
     },
     inputValidities: {
       title: productToEdit ? true : false,
@@ -80,16 +80,15 @@ const EditProduct = (props) => {
 
   const submitHandler = useCallback(() => {
     if (!formState.formIsValid) {
-      Alert.alert('Missing data!', 'Please check the errors in the form', [
+      Alert.alert("Missing data!", "Please check the errors in the form", [
         {
-          text: 'Ok',
+          text: "Ok",
         },
       ]);
       return;
     }
 
     formState.inputValues.price = +formState.inputValues.price;
-
     if (productToEdit) {
       dispatch(updateProduct(formState.inputValues));
     } else {
@@ -105,58 +104,58 @@ const EditProduct = (props) => {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+      behavior={Platform.OS === "android" ? "height" : "padding"}
       keyboardVerticalOffset={50}
     >
       <ScrollView>
         <View style={{ ...props.style, ...styles.form }}>
           <CustomInput
-            id='title'
-            label='Title'
+            id="title"
+            label="Title"
             onInputChange={inputChangeHandler}
-            errorMessage='Please enter a valid Title'
-            initialValue={productToEdit ? productToEdit.title : ''}
+            errorMessage="Please enter a valid Title"
+            initialValue={productToEdit ? productToEdit.title : ""}
             initiallyValid={!!productToEdit}
-            keyboardType='default'
-            autoCapitalize='sentences'
+            keyboardType="default"
+            autoCapitalize="sentences"
             autoCorrect
-            returnKeyType='next'
+            returnKeyType="next"
             required
           />
           <CustomInput
-            id='imageUrl'
-            label='Image Url'
+            id="imageUrl"
+            label="Image Url"
             onInputChange={inputChangeHandler}
-            errorMessage='Please enter a valid ImageUrl'
-            keyboardType='default'
-            returnKeyType='next'
-            initialValue={productToEdit ? productToEdit.imageUrl : ''}
+            errorMessage="Please enter a valid ImageUrl"
+            keyboardType="default"
+            returnKeyType="next"
+            initialValue={productToEdit ? productToEdit.imageUrl : ""}
             initiallyValid={!!productToEdit}
             required
           />
           {productToEdit ? null : (
             <CustomInput
-              id='price'
-              label='Price'
+              id="price"
+              label="Price"
               onInputChange={inputChangeHandler}
-              errorMessage='Please enter a valid Price'
-              keyboardType='decimal-pad'
-              returnKeyType='next'
+              errorMessage="Please enter a valid Price"
+              keyboardType="decimal-pad"
+              returnKeyType="next"
               required
               min={0.1}
             />
           )}
           <CustomInput
-            id='description'
-            label='Description'
+            id="description"
+            label="Description"
             onInputChange={inputChangeHandler}
             miltiline
             numberOfLines={4}
-            errorMessage='Please enter a valid Description'
-            keyboardType='default'
-            autoCapitalize='sentences'
+            errorMessage="Please enter a valid Description"
+            keyboardType="default"
+            autoCapitalize="sentences"
             autoCorrect
-            initialValue={productToEdit ? productToEdit.description : ''}
+            initialValue={productToEdit ? productToEdit.description : ""}
             initiallyValid={!!productToEdit}
             required
             minLength={5}
@@ -168,17 +167,17 @@ const EditProduct = (props) => {
 };
 
 EditProduct.navigationOptions = (navData) => {
-  const submitHandler = navData.navigation.getParam('submit');
+  const submitHandler = navData.navigation.getParam("submit");
   return {
-    headerTitle: navData.navigation.getParam('productId')
-      ? 'Edit Product'
-      : 'Add Product',
+    headerTitle: navData.navigation.getParam("productId")
+      ? "Edit Product"
+      : "Add Product",
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
         <Item
-          title='Save'
+          title="Save"
           iconName={
-            Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
+            Platform.OS === "android" ? "md-checkmark" : "ios-checkmark"
           }
           onPress={submitHandler}
         ></Item>

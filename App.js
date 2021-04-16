@@ -9,7 +9,9 @@ import * as Font from "expo-font";
 import ReduxThunk from "redux-thunk";
 
 import { composeWithDevTools } from "redux-devtools-extension";
-LogBox.ignoreAllLogs();
+
+LogBox.ignoreAllLogs(true);
+LogBox.ignoreLogs(["Warning: ..."]);
 
 const store = createStore(
   rootReducer,
