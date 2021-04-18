@@ -3,7 +3,7 @@ import { LogBox } from "react-native";
 import { compose, createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import rootReducer from "./store/reducers";
-import Navigator from "./navigation/Navigator";
+import NavigationContainer from "./navigation/NavigationContainer";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 import ReduxThunk from "redux-thunk";
@@ -40,7 +40,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <Navigator />
+      <NavigationContainer />
     </Provider>
   );
 }
