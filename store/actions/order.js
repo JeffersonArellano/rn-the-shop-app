@@ -1,8 +1,9 @@
 import Order from "../../models/order";
 import { ADD_ORDER, GET_ORDERS } from "./actionNameConstants";
 
-export const getOrders = (userId) => {
-  return async (dispatch) => {
+export const getOrders = () => {
+  return async (dispatch, getState) => {
+    const userId = getState().auth.userId;
     try {
       const response = await fetch(
         `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/orders/${userId}.json`
@@ -12,7 +13,6 @@ export const getOrders = (userId) => {
         throw new Error("Something went wrong!");
       }
       const responseData = await response.json();
-      console.log("responseData", responseData);
 
       const loadedOrders = [];
       for (var key in responseData) {
@@ -34,10 +34,13 @@ export const getOrders = (userId) => {
 };
 
 export const addOrder = (cartItems, totalAmount) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const idToken = getState().auth.token;
+    const userId = getState().auth.userId;
     const orderDate = new Date();
+
     const response = await fetch(
-      "https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/orders/u1.json",
+      `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/orders/${userId}.json?auth=${idToken}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

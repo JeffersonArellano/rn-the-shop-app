@@ -11,8 +11,8 @@ import {
 } from "../actions/actionNameConstants";
 
 const initialState = {
-  availableProducts: data.PRODUCTS,
-  userProducts: data.PRODUCTS.filter((product) => product.ownerId === "u1"),
+  availableProducts: [],
+  userProducts: [],
 };
 
 export default (state = initialState, action) => {
@@ -20,9 +20,7 @@ export default (state = initialState, action) => {
     case GET_PRODUCTS:
       return {
         availableProducts: action.products,
-        userProducts: action.products.filter(
-          (product) => product.ownerId === "u1"
-        ),
+        userProducts: action.userProducts,
       };
 
     case CREATE_PRODUCT:
@@ -30,7 +28,7 @@ export default (state = initialState, action) => {
 
       const newProduct = new Product(
         product.id,
-        "u1",
+        product.ownerId,
         product.title,
         product.imageUrl,
         product.description,

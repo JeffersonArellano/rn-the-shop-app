@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   View,
+  Text,
   ActivityIndicator,
   Button,
   StyleSheet,
@@ -12,7 +13,12 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../../components/UI/headerButton/HeaderButton";
 import ListItem from "../../../components/shop/listItem/ListItem";
 import Colors from "../../../constants/Colors";
-import { editProduct, deleteProduct } from "../../../store/actions/products";
+import { deleteProduct } from "../../../store/actions/products";
+import {
+  MaterialCommunityIcons,
+  FontAwesome5,
+  Ionicons,
+} from "@expo/vector-icons";
 
 const UserProducts = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -67,6 +73,19 @@ const UserProducts = (props) => {
     );
   }
 
+  if (userProducts.length <= 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Ionicons name="chatbox-outline" size={100} color={Colors.primary} />
+
+        <Text style={styles.emptyList}>
+          There's not products created, start creating some
+          <FontAwesome5 name="smile-wink" size={24} color="black" />
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <FlatList
       data={userProducts}
@@ -103,6 +122,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  emptyContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  emptyList: {
+    textAlign: "center",
+    fontFamily: "open-sans",
+    fontSize: 20,
   },
 });
 
