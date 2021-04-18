@@ -1,9 +1,9 @@
-import React, { useReducer, useEffect } from 'react';
-import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
-import Colors from '../../../constants/Colors';
+import React, { useReducer, useEffect } from "react";
+import { View, Text, Button, TextInput, StyleSheet } from "react-native";
+import Colors from "../../../constants/Colors";
 
-const INPUT_CHANGE = 'INPUT_CHANGE';
-const INPUT_BLUR = 'INPUT_BLUR';
+const INPUT_CHANGE = "INPUT_CHANGE";
+const INPUT_BLUR = "INPUT_BLUR";
 
 const inputReducer = (state, action) => {
   switch (action.type) {
@@ -20,7 +20,7 @@ const inputReducer = (state, action) => {
 
 const CustomInput = (props) => {
   const [inputState, dispatchInputState] = useReducer(inputReducer, {
-    value: props.initialValue ? props.initialValue : '',
+    value: props.initialValue ? props.initialValue : "",
     touched: false,
     isValid: props.initiallyValid,
   });
@@ -69,7 +69,7 @@ const CustomInput = (props) => {
       <Text style={styles.label}>
         {props.label}
 
-        {props.required ? <Text style={styles.asterisk}> *</Text> : ''}
+        {props.required ? <Text style={styles.asterisk}> *</Text> : ""}
       </Text>
       <TextInput
         {...props}
@@ -83,7 +83,7 @@ const CustomInput = (props) => {
           <Text style={styles.errorText}>
             {props.errorMessage}
             {props.minLength ? (
-              <Text>{`, min length${props.minLength}`}</Text>
+              <Text>{`, min length ${props.minLength}`}</Text>
             ) : null}
           </Text>
         </View>
@@ -94,29 +94,29 @@ const CustomInput = (props) => {
 
 const styles = StyleSheet.create({
   formControl: {
-    width: '100%',
-    justifyContent: 'space-between',
+    width: "100%",
+    justifyContent: "space-between",
     marginVertical: 5,
   },
   label: {
-    fontFamily: 'open-sans',
+    fontFamily: "open-sans",
     fontSize: 15,
-    width: '100%',
+    width: "100%",
     margin: 4,
   },
   input: {
     borderRadius: 2,
     borderWidth: 1,
     fontSize: 16,
-    width: '100%',
+    width: "100%",
     paddingVertical: 5,
     paddingHorizontal: 3,
-    borderColor: '#888',
+    borderColor: "#888",
   },
   errorContainer: {
     marginVertical: 4,
   },
-  errorText: { color: Colors.primary, fontFamily: 'open-sans', fontSize: 13 },
+  errorText: { color: Colors.primary, fontFamily: "open-sans", fontSize: 13 },
   asterisk: { color: Colors.primary, fontSize: 16 },
 });
 

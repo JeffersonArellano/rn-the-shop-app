@@ -7,7 +7,9 @@ import {
 import Product from "../../models/product";
 
 export const getProducts = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const idToken = getState().auth.token;
+    const userId = getState().auth.userId;
     try {
       const response = await fetch(
         "https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products.json"
@@ -25,7 +27,7 @@ export const getProducts = () => {
         loadedProducts.push(
           new Product(
             key,
-            "u1",
+            responseData[key].ownerId,
             responseData[key].title,
             responseData[key].imageUrl,
             responseData[key].description,
@@ -34,7 +36,11 @@ export const getProducts = () => {
         );
       }
 
-      dispatch({ type: GET_PRODUCTS, products: loadedProducts });
+      dispatch({
+        type: GET_PRODUCTS,
+        products: loadedProducts,
+        userProducts: loadedProducts.filter((prod) => prod.ownerId === userId),
+      });
     } catch (error) {
       throw error;
     }
@@ -42,28 +48,32 @@ export const getProducts = () => {
 };
 
 export const createProduct = (product) => {
-  return async (dispatch) => {
-    // any sync code you want
+  return async (dispatch, getState) => {
+    const idToken = getState().auth.token;
+    const userId = getState().auth.userId;
+    const updatedProduct = { ...product, ownerId: userId };
+
     const response = await fetch(
-      "https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products.json",
+      `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products.json?auth=${idToken}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(product),
+        body: JSON.stringify(updatedProduct),
       }
     );
 
     const responseData = await response.json();
-    product.id = responseData.name;
+    updatedProduct.id = responseData.name;
 
-    dispatch({ type: CREATE_PRODUCT, product });
+    dispatch({ type: CREATE_PRODUCT, updatetdProduct: updatedProduct });
   };
 };
 
 export const updateProduct = (product) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const idToken = getState().auth.token;
     const response = await fetch(
-      `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products/${product.id}.json`,
+      `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products/${product.id}.json?auth=${idToken}`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -84,9 +94,10 @@ export const updateProduct = (product) => {
 };
 
 export const deleteProduct = (productId) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const idToken = getState().auth.token;
     const response = await fetch(
-      `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products/${productId}.json`,
+      `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products/${productId}.json?auth=${idToken}`,
       {
         method: "DELETE",
       }

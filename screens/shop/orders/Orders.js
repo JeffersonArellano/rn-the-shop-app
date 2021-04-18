@@ -14,6 +14,7 @@ import CustomHeaderButton from "../../../components/UI/headerButton/HeaderButton
 import OrderItem from "../../../components/shop/orderItem/OrderItem";
 import { getOrders } from "../../../store/actions/order";
 import Colors from "../../../constants/Colors";
+import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Orders = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +25,7 @@ const Orders = (props) => {
   useEffect(async () => {
     setIsLoading(true);
     try {
-      await dispatch(getOrders("u1"));
+      await dispatch(getOrders());
     } catch (error) {
       setError(error.message);
     }
@@ -41,6 +42,18 @@ const Orders = (props) => {
 
   if (isLoading) {
     return <ActivityIndicator size="large" color={Colors.primary} />;
+  }
+
+  if (orders.length <= 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <FontAwesome5 name="box-open" size={100} color={Colors.primary} />
+        <Text style={styles.emptyList}>
+          There's not orders created, take a look around and add some orders
+          <FontAwesome5 name="smile-wink" size={24} color="black" />
+        </Text>
+      </View>
+    );
   }
 
   return (
@@ -83,6 +96,12 @@ Orders.navigationOptions = (navOptions) => {
 const styles = StyleSheet.create({
   screen: {},
   text: { color: "red" },
+  emptyContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  emptyList: {
+    textAlign: "center",
+    fontFamily: "open-sans",
+    fontSize: 20,
+  },
 });
 
 export default Orders;
