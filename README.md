@@ -16,6 +16,6 @@ redux-thunk
 expo-linear-gradient
 yarn add @react-native-async-storage/async-storage
 
-Firebase Auth
+## Firebase Auth
 
-## https://firebase.google.com/docs/reference/rest/auth/
+### https://firebase.google.com/docs/reference/rest/auth/
