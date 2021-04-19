@@ -5,11 +5,8 @@ let timer;
 
 export const authenticateUser = (userData) => {
   return (dispatch) => {
-    const expirationDateMiliseconds = userData.expiresIn;
-    console.log("userData", userData);
-    console.log("expirationDateMiliseconds", expirationDateMiliseconds);
-
-    dispatch(setLogoutTimer(expirationDateMiliseconds * 100));
+    const expirationDateMiliseconds = parseInt(userData.expiresIn) * 1000;
+    dispatch(setLogoutTimer(expirationDateMiliseconds));
     dispatch({ type: AUTHENTICATE_USER, userData: userData });
   };
 };
@@ -30,7 +27,7 @@ const setLogoutTimer = (expirationDate) => {
   return (dispatch) => {
     timer = setTimeout(() => {
       dispatch(logoutUser());
-    }, expirationDate / 1000);
+    }, expirationDate);
   };
 };
 
@@ -63,7 +60,7 @@ export const signup = (email, password) => {
 
     const responseData = await response.json();
 
-    dispatch(authenticateUser({ userData: responseData }));
+    dispatch(authenticateUser(responseData));
 
     const expirationDate = new Date(
       new Date().getTime() + parseInt(responseData.expiresIn) * 1000
@@ -107,7 +104,7 @@ export const login = (email, password) => {
 
     const responseData = await response.json();
 
-    dispatch(authenticateUser({ userData: responseData }));
+    dispatch(authenticateUser(responseData));
 
     const expirationDate = new Date(
       new Date().getTime() + parseInt(responseData.expiresIn) * 1000

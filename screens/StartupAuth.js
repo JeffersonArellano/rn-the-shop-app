@@ -11,7 +11,6 @@ const StartupAuth = (props) => {
   useEffect(() => {
     const tryLogin = async () => {
       const userData = await AsyncStorage.getItem("userData");
-
       if (!userData) {
         props.navigation.navigate("AuthNavigator");
         return;
