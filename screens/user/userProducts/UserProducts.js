@@ -13,7 +13,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../../components/UI/headerButton/HeaderButton";
 import ListItem from "../../../components/shop/listItem/ListItem";
 import Colors from "../../../constants/Colors";
-import { deleteProduct } from "../../../store/actions/products";
+import { deleteProduct, getProducts } from "../../../store/actions/products";
 import {
   MaterialCommunityIcons,
   FontAwesome5,
@@ -23,6 +23,7 @@ import {
 const UserProducts = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const userProducts = useSelector((state) => state.products.userProducts);
 
@@ -39,6 +40,35 @@ const UserProducts = (props) => {
       Alert.alert("An error  occurred!", error, [{ text: "Ok" }]);
     }
   }, [error]);
+
+  const loadProducts = useCallback(async () => {
+    setError(null);
+    setIsRefreshing(true);
+    try {
+      await dispatch(getProducts());
+    } catch (error) {
+      setError(error.message);
+    }
+    setIsRefreshing(false);
+  }, [dispatch, setIsRefreshing, setError]);
+
+  useEffect(() => {
+    const willFocusSub = props.navigation.addListener(
+      "willFocus",
+      loadProducts
+    );
+
+    return () => {
+      willFocusSub.remove();
+    };
+  }, [loadProducts]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    loadProducts().then(() => {
+      setIsLoading(false);
+    });
+  }, [dispatch, loadProducts]);
 
   const deleteDispatchHandler = useCallback(
     async (id) => {
@@ -88,8 +118,11 @@ const UserProducts = (props) => {
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={userProducts}
       keyExtractor={(item) => item.id}
+      style={{ width: "100%" }}
       renderItem={(itemData) => (
         <ListItem
           imageUrl={itemData.item.imageUrl}

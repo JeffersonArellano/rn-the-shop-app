@@ -54,21 +54,21 @@ export const createProduct = (product) => {
   return async (dispatch, getState) => {
     const idToken = getState().auth.token;
     const userId = getState().auth.userId;
-    const updatedProduct = { ...product, ownerId: userId };
+    let createdProduct = { ...product, ownerId: userId };
 
     const response = await fetch(
       `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products.json?auth=${idToken}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedProduct),
+        body: JSON.stringify(createdProduct),
       }
     );
 
     const responseData = await response.json();
-    updatedProduct.id = responseData.name;
+    createdProduct = { ...product, id: responseData.name };
 
-    dispatch({ type: CREATE_PRODUCT, updatetdProduct: updatedProduct });
+    dispatch({ type: CREATE_PRODUCT, product: createdProduct });
   };
 };
 
