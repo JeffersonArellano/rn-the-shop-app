@@ -34,7 +34,7 @@ const ProductOverview = (props) => {
       setErrorMessage(error.message);
     }
     setIsRefreshing(false);
-  }, [dispatch, setIsloading, setErrorMessage]);
+  }, [dispatch, setIsRefreshing, setErrorMessage]);
 
   useEffect(() => {
     const willFocusSub = props.navigation.addListener(

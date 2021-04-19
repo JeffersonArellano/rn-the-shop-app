@@ -9,7 +9,7 @@ import Product from "../../models/product";
 export const getProducts = () => {
   return async (dispatch, getState) => {
     const idToken = getState().auth.token;
-    const userId = getState().auth.userId;
+    const userId = await getState().auth.userId;
     try {
       const response = await fetch(
         "https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products.json"
@@ -20,7 +20,6 @@ export const getProducts = () => {
       }
 
       const responseData = await response.json();
-      products = responseData;
 
       const loadedProducts = [];
       for (var key in responseData) {
@@ -36,10 +35,14 @@ export const getProducts = () => {
         );
       }
 
+      const userProducts = loadedProducts.filter(
+        (prod) => prod.ownerId === userId
+      );
+
       dispatch({
         type: GET_PRODUCTS,
         products: loadedProducts,
-        userProducts: loadedProducts.filter((prod) => prod.ownerId === userId),
+        userProducts: userProducts,
       });
     } catch (error) {
       throw error;
@@ -51,21 +54,21 @@ export const createProduct = (product) => {
   return async (dispatch, getState) => {
     const idToken = getState().auth.token;
     const userId = getState().auth.userId;
-    const updatedProduct = { ...product, ownerId: userId };
+    let createdProduct = { ...product, ownerId: userId };
 
     const response = await fetch(
       `https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products.json?auth=${idToken}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedProduct),
+        body: JSON.stringify(createdProduct),
       }
     );
 
     const responseData = await response.json();
-    updatedProduct.id = responseData.name;
+    createdProduct = { ...product, id: responseData.name };
 
-    dispatch({ type: CREATE_PRODUCT, updatetdProduct: updatedProduct });
+    dispatch({ type: CREATE_PRODUCT, product: createdProduct });
   };
 };
 

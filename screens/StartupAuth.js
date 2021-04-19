@@ -27,7 +27,13 @@ const StartupAuth = (props) => {
       const expDate = expirationDate.getTime() - new Date().getTime();
 
       props.navigation.navigate("ShopNavigator");
-      dispatch(authenticateUser({ userId, token, expiresIn: expDate }));
+      dispatch(
+        authenticateUser({
+          idToken: token,
+          localId: userId,
+          expiresIn: expDate,
+        })
+      );
     };
 
     tryLogin();
