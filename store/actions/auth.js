@@ -4,10 +4,10 @@ import { AUTHENTICATE_USER, LOGOUT_USER } from "./actionNameConstants";
 let timer;
 
 export const authenticateUser = (userData) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     const expirationDateMiliseconds = parseInt(userData.expiresIn) * 1000;
-    dispatch(setLogoutTimer(expirationDateMiliseconds));
-    dispatch({ type: AUTHENTICATE_USER, userData: userData });
+    await dispatch(setLogoutTimer(expirationDateMiliseconds));
+    await dispatch({ type: AUTHENTICATE_USER, userData: userData });
   };
 };
 
@@ -66,7 +66,7 @@ export const signup = (email, password) => {
       new Date().getTime() + parseInt(responseData.expiresIn) * 1000
     );
 
-    saveDataToStorage(
+    await saveDataToStorage(
       responseData.idToken,
       responseData.localId,
       expirationDate
@@ -103,14 +103,13 @@ export const login = (email, password) => {
     }
 
     const responseData = await response.json();
-
     dispatch(authenticateUser(responseData));
 
     const expirationDate = new Date(
       new Date().getTime() + parseInt(responseData.expiresIn) * 1000
     );
 
-    saveDataToStorage(
+    await saveDataToStorage(
       responseData.idToken,
       responseData.localId,
       expirationDate
@@ -118,8 +117,8 @@ export const login = (email, password) => {
   };
 };
 
-const saveDataToStorage = (token, userId, expirationDate) => {
-  AsyncStorage.setItem(
+const saveDataToStorage = async (token, userId, expirationDate) => {
+  await AsyncStorage.setItem(
     "userData",
     JSON.stringify({
       token: token,

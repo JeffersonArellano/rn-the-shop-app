@@ -9,7 +9,7 @@ import Product from "../../models/product";
 export const getProducts = () => {
   return async (dispatch, getState) => {
     const idToken = getState().auth.token;
-    const userId = getState().auth.userId;
+    const userId = await getState().auth.userId;
     try {
       const response = await fetch(
         "https://rn-the-shop-app-9bfb9-default-rtdb.firebaseio.com/products.json"
@@ -20,7 +20,6 @@ export const getProducts = () => {
       }
 
       const responseData = await response.json();
-      products = responseData;
 
       const loadedProducts = [];
       for (var key in responseData) {
@@ -36,10 +35,14 @@ export const getProducts = () => {
         );
       }
 
+      const userProducts = loadedProducts.filter(
+        (prod) => prod.ownerId === userId
+      );
+
       dispatch({
         type: GET_PRODUCTS,
         products: loadedProducts,
-        userProducts: loadedProducts.filter((prod) => prod.ownerId === userId),
+        userProducts: userProducts,
       });
     } catch (error) {
       throw error;
